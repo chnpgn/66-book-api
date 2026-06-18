@@ -1,0 +1,28 @@
+@base_address = http://localhost:3000/api/v1
+
+###
+GET {{base_address}}/books
+
+###
+GET {{base_address}}/books/GEN
+
+###
+GET {{base_address}}/books/John/chapters/3
+
+###
+GET {{base_address}}/books/Genesis/chapters/3/verses/3
+
+###
+GET {{base_address}}/books/Exodus/chapters/33/range?start=16&end=18
+
+### 
+GET {{base_address}}/passages/?book=john&start=3:16&end=4:5
+
+###
+GET {{base_address}}/passages/random
+
+###
+GET {{base_address}}/passages/daily
+
+###
+GET {{base_address}}/search?q=faith&page=1&limit=10

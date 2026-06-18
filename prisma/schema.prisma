@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model books {
+  id             Int             @id @default(autoincrement())
+  name           String          @unique(map: "name") @db.VarChar(50)
+  abbreviation   String          @unique(map: "abbreviation") @db.VarChar(10)
+  testament      books_testament
+  chapters_count Int
+  created_at     DateTime?       @default(now()) @db.Timestamp(0)
+  verses         verses[]
+}
+
+model verses {
+  id             BigInt    @id @default(autoincrement())
+  book_id        Int
+  chapter_number Int
+  verse_number   Int
+  verse_text     String    @db.Text
+  created_at     DateTime? @default(now()) @db.Timestamp(0)
+  books          books     @relation(fields: [book_id], references: [id], onUpdate: Restrict, map: "fk_book")
+
+  @@unique([book_id, chapter_number, verse_number], map: "unique_reference")
+  @@index([book_id], map: "idx_book")
+  @@index([book_id, chapter_number], map: "idx_book_chapter")
+  @@index([book_id, chapter_number, verse_number], map: "idx_book_chapter_verse")
+  @@fulltext([verse_text], map: "idx_verse_search")
+}
+
+enum books_testament {
+  Old_Testament @map("Old Testament")
+  New_Testament @map("New Testament")
+}

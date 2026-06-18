@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  db:
+    image: mariadb:11.1
+    container_name: book_api_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: book_api
+      MYSQL_USER: bookapi
+      MYSQL_PASSWORD: bookapipassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: book_api_app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: mysql://bookapi:bookapipassword@db:3306/book_api
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - ./:/usr/src/app:cached
+    working_dir: /usr/src/app
+
+volumes:
+  db_data:
